@@ -80,6 +80,30 @@ public class LoginControllerAsync {
             return Mono.just(new LogoutResponseDTO("99", "Error en el proceso de cierre de sesión"));
         }
     }
+    @PostMapping("/logout-feign")
+    public Mono<LogoutResponseDTO> cerrarSesionFeign(@RequestBody LogoutRequestDTO logoutRequestDTO) {
+        try {
 
+            ResponseEntity<LogoutResponseDTO> responseEntity = autenticacionClient.logout(logoutRequestDTO);
+
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+
+                LogoutResponseDTO logoutResponseDTO = responseEntity.getBody();
+
+                if(logoutResponseDTO.codigo().equals("00")){
+                    return Mono.just(new LogoutResponseDTO("00", "Cierre de sesión exitoso"));
+                }else {
+                    return Mono.just(new LogoutResponseDTO("02", "Error al cerrar sesión"));
+                }
+
+
+            } else {
+                return Mono.just(new LogoutResponseDTO("99", "Error: Ocurrió un problema http"));
+            }
+
+        } catch (Exception e) {
+            return Mono.just(new LogoutResponseDTO("99", "Error en el proceso de cierre de sesión"));
+        }
+    }
 
 }
