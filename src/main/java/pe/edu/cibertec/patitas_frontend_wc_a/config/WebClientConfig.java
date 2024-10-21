@@ -19,6 +19,12 @@ public class WebClientConfig {
             .responseTimeout(Duration.ofSeconds(10)) // timeout para obtener el total de la respuesta
             .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(10, TimeUnit.SECONDS))); // timeout para la recepción de cada paquete
 
-
+    @Bean
+    public WebClient webClientAutenticacion(WebClient.Builder builder) {
+        return builder
+                .baseUrl("http://localhost:8081/autenticacion")
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
+    }
 
 }
